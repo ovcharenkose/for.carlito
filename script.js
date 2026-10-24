@@ -215,3 +215,104 @@ if (carlitoBtn && carlitoSound) {
   }
 })();
 
+
+
+// ===== Страница 1: телепортация =====
+(function () {
+  const pressBtn = document.getElementById('pressBtn');
+  if (!pressBtn) return;
+
+  const overlay = document.getElementById('teleportOverlay');
+  const countEl = document.getElementById('teleportCount');
+  const flash = document.getElementById('teleportFlash');
+
+  let started = false;
+
+  function runTeleport() {
+    if (started) return;
+    started = true;
+
+    // 1. Кнопка схлопывается
+    pressBtn.classList.add('teleporting');
+
+    // 2. Через 0.5с — затемнение экрана
+    setTimeout(() => {
+      overlay.classList.add('active');
+    }, 500);
+
+    // 3. Через 1с — начинаем отсчёт 3, 2, 1
+    setTimeout(() => {
+      let count = 3;
+
+      function showNumber() {
+        countEl.textContent = count;
+        countEl.classList.remove('show');
+        // форсируем перезапуск анимации
+        void countEl.offsetWidth;
+        countEl.classList.add('show');
+
+        if (count > 1) {
+          count--;
+          setTimeout(showNumber, 900);
+        } else {
+          // 4. После "1" — белая вспышка и переход
+          setTimeout(() => {
+            flash.classList.add('active');
+            setTimeout(() => {
+              window.location.href = 'page2.html';
+            }, 250);
+          }, 900);
+        }
+      }
+
+      showNumber();
+    }, 1000);
+  }
+
+  // Запуск по тапу/клику
+  pressBtn.addEventListener('click', runTeleport);
+  pressBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    runTeleport();
+  }, { passive: false });
+})();
+
+
+// ===== Магический переход page3 → page4 =====
+(function () {
+  const magicBtn = document.getElementById('magicBtn');
+  if (!magicBtn) return;
+
+  const fog = document.getElementById('fogOverlay');
+  const spinner = document.getElementById('magicSpinner');
+  let started = false;
+
+  function runMagic() {
+    if (started) return;
+    started = true;
+
+    // 1. Кнопка «растворяется»
+    magicBtn.classList.add('magic-pressed');
+
+    // 2. Через 0.4с — серый туман наползает
+    setTimeout(() => {
+      fog.classList.add('active');
+    }, 400);
+
+    // 3. Через 1.0с — появляется спиннер
+    setTimeout(() => {
+      spinner.classList.add('active');
+    }, 1000);
+
+    // 4. Через 2.6с — переход на page4.html
+    setTimeout(() => {
+      window.location.href = 'page4.html';
+    }, 2600);
+  }
+
+  magicBtn.addEventListener('click', runMagic);
+  magicBtn.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    runMagic();
+  }, { passive: false });
+})();

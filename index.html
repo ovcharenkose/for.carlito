@@ -6,9 +6,18 @@
   <title>Press</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="page1">
+
   <div class="screen">
-    <a href="page2.html" class="press-btn">press</a>
+    <button class="press-btn" id="pressBtn">press</button>
   </div>
+
+  <!-- Оверлей для телепортации -->
+  <div class="teleport-overlay" id="teleportOverlay">
+    <div class="teleport-count" id="teleportCount"></div>
+    <div class="teleport-flash" id="teleportFlash"></div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
