@@ -217,7 +217,9 @@ if (carlitoBtn && carlitoSound) {
 
 
 
-// ===== Страница 1: телепортация =====
+// ===== Страница 1: телепортация с вращением и взрывом =====
+// ===== Страница 1: телепортация с вращением и взрывом =====
+// ===== Страница 1: телепортация с вращением и взрывом =====
 (function () {
   const pressBtn = document.getElementById('pressBtn');
   if (!pressBtn) return;
@@ -228,26 +230,69 @@ if (carlitoBtn && carlitoSound) {
 
   let started = false;
 
+  function createParticles(btn) {
+    const rect = btn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const burst = document.createElement('div');
+    burst.className = 'burst-container';
+    document.body.appendChild(burst);
+
+    const total = 40;
+    for (let i = 0; i < total; i++) {
+      const p = document.createElement('span');
+      p.className = 'burst-particle';
+
+      const angle = (Math.PI * 2 * i) / total + (Math.random() - 0.5) * 0.5;
+      const dist = 120 + Math.random() * 220;
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      const rot = Math.random() * 1080 - 540;
+      const size = 5 + Math.random() * 12;
+      const dur = 2.8 + Math.random() * 0.4;   // ~3 секунды полёта
+
+      p.style.left = cx + 'px';
+      p.style.top  = cy + 'px';
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.setProperty('--dx', dx + 'px');
+      p.style.setProperty('--dy', dy + 'px');
+      p.style.setProperty('--rot', rot + 'deg');
+      p.style.animationDuration = dur + 's';
+
+      burst.appendChild(p);
+    }
+
+    setTimeout(() => burst.remove(), 3500);
+  }
+
   function runTeleport() {
     if (started) return;
     started = true;
 
-    // 1. Кнопка схлопывается
-    pressBtn.classList.add('teleporting');
+    // 1. Вращение 3 секунды
+    pressBtn.classList.add('spin-3s');
 
-    // 2. Через 0.5с — затемнение экрана
+    // 2. Взрыв через 3 секунды (летит 3 секунды)
+    setTimeout(() => {
+      pressBtn.classList.remove('spin-3s');
+      pressBtn.classList.add('teleporting');
+      createParticles(pressBtn);
+    }, 3000);
+
+    // 3. Затемнение только через 3 секунды ПОСЛЕ взрыва (то есть на 6-й секунде)
     setTimeout(() => {
       overlay.classList.add('active');
-    }, 500);
+    }, 6000);
 
-    // 3. Через 1с — начинаем отсчёт 3, 2, 1
+    // 4. Отсчёт — ещё через 0.5с после начала затемнения
     setTimeout(() => {
       let count = 3;
 
       function showNumber() {
         countEl.textContent = count;
         countEl.classList.remove('show');
-        // форсируем перезапуск анимации
         void countEl.offsetWidth;
         countEl.classList.add('show');
 
@@ -255,7 +300,6 @@ if (carlitoBtn && carlitoSound) {
           count--;
           setTimeout(showNumber, 900);
         } else {
-          // 4. После "1" — белая вспышка и переход
           setTimeout(() => {
             flash.classList.add('active');
             setTimeout(() => {
@@ -266,16 +310,16 @@ if (carlitoBtn && carlitoSound) {
       }
 
       showNumber();
-    }, 1000);
+    }, 6500);
   }
 
-  // Запуск по тапу/клику
   pressBtn.addEventListener('click', runTeleport);
   pressBtn.addEventListener('touchstart', (e) => {
     e.preventDefault();
     runTeleport();
   }, { passive: false });
 })();
+
 
 
 // ===== Магический переход page3 → page4 =====

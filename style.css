@@ -1444,3 +1444,48 @@ html, body {
   filter: blur(6px);
   transition: transform 0.6s ease, opacity 0.6s ease, filter 0.6s ease;
 }
+
+
+
+
+/* ===== Вращение кнопки 5 секунд ===== */
+/* ===== Вращение кнопки ===== */
+#pressBtn.spin-3s {
+  animation: spinFast 0.6s linear infinite;
+  transition: none;
+}
+
+
+@keyframes spinFast {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ===== Осколки взрыва ===== */
+.burst-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 998;
+}
+
+.burst-particle {
+  position: absolute;
+  background: #FFCBCB;
+  border-radius: 3px;
+  box-shadow: 0 0 8px rgba(255, 203, 203, 0.8);
+  animation: burstFly ease-out forwards;
+  animation-duration: 2.6s;   /* базовая, JS перезапишет */
+  will-change: transform, opacity;
+}
+
+@keyframes burstFly {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)) scale(0.2);
+    opacity: 0;
+  }
+}
