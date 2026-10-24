@@ -40,7 +40,7 @@ if (noBtn) {
       } catch (e) {}
     }
     // уменьшение (не меньше 30%)
-    scale = Math.max(0.1, scale - 0.2);
+    scale = Math.max(0.1, scale - 0.4);
     noBtn.style.transform = `scale(${scale})`;
     // убегание
     moveNo();
